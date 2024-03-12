@@ -7,7 +7,7 @@ class productsController {
       const { name, category, price, description } = request.body;
       console.log(request.body)
       const users_id = request.user.id;
-      const ingredients = JSON.parse(request.body.ingredients); // Convertendo a string para um array
+      const ingredients = JSON.parse(request.body.ingredients);
       const productImage = request.file ? request.file.filename : null;
 
       const diskStorage = new DiskStorage();
@@ -40,8 +40,8 @@ class productsController {
 
       return response.json();
     } catch (error) {
-      console.error("Erro no banco de dados:", error);
-      return response.status(500).json({ erro: "Erro interno do servidor" });
+      console.error("database error:", error);
+      return response.status(500).json({ erro: "internal server error" });
     }
   }
 
@@ -89,7 +89,6 @@ class productsController {
             .split(",")
             .map((ingredient) => ingredient.trim());
 
-          // Consulta de produtos com base em ingredientes
           products = await knex("ingredients")
             .distinct()
             .select([
@@ -105,7 +104,6 @@ class productsController {
             .whereLike("ingredients.name", `%${filterIngredients}%`)
             .innerJoin("products", "products.id", "products_id");
         } else {
-          // Consulta de produtos com base apenas no nome
           products = await knex("products")
             .select([
               "id",
@@ -121,10 +119,10 @@ class productsController {
       }
       return response.json({ products });
     } catch (error) {
-      console.error("Erro na consulta:", error.message);
+      console.error("Erro:", error.message);
       return response
         .status(500)
-        .json({ error: "Erro na consulta ao banco de dados" });
+        .json({ error: "internal server error" });
     }
   }
 
@@ -135,15 +133,12 @@ class productsController {
 
     const products = await knex("products").where({ id }).first();
 
-    // Verificar se há uma nova imagem na requisição
     if (request.file) {
       const diskStorage = new DiskStorage();
       const filename = await diskStorage.saveFile(request.file.filename);
 
-      // Excluir a imagem antiga apenas se uma nova imagem for enviada
       await diskStorage.deleteFile(products.image);
 
-      // Atualizar o caminho da nova imagem no objeto 'products'
       products.image = filename;
     }
 
@@ -152,7 +147,6 @@ class productsController {
     products.price = price || products.price;
     products.description = description || products.description;
 
-    // Ajuste na lógica para garantir que ingredients seja sempre um array
     const ingredientsArray = ingredients ? JSON.parse(ingredients) : [];
 
     const ingredientsInsert = ingredientsArray.map((ingredient) => {
@@ -163,13 +157,10 @@ class productsController {
       };
     });
 
-    // Remover os ingredientes antigos
     await knex("ingredients").where({ products_id: id }).delete();
 
-    // Inserir os novos ingredientes
     await knex("ingredients").insert(ingredientsInsert);
 
-    // Atualizar o produto no banco de dados
     await knex("products").where({ id }).update(products);
 
     return response.status(200).json();
