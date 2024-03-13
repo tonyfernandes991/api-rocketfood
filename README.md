@@ -5,6 +5,9 @@ Aplicação de ponta a ponta que simula um restaurante. Foi criado um cenário o
 
 Para o back-end, utilizamos o Node.js como tecnologia principal, juntamente com Express.js para criar um servidor robusto que irá lidar com as requisições dos clientes. Para banco de dados utilizamos SQLlite para armazenar informações sobre o menu do restaurante, cadastrando usuários, pratos e ingredintes. Além disso, implementamos autenticação de usuário para que os clientes possam fazer login e acessar o menu, e os funcionários(admin) possam acessar o sistema de gerenciamento do restaurante.
 
+🚨**ATENÇÃO**🚨
+***O deploy do backand foi feito no [render](https://api-rocketfood.onrender.com/)(ensinado em aula!), até o momento, em uma conta gratuita. por isso ficará inativa, podendo atrasar as solicitações em 50 segundos, conforme consta no site: "Sua instância gratuita ficará inativa, o que pode atrasar as solicitações em 50 segundos ou mais."***
+
 ## Funcionalidades e competências
 
 - Desenvolvimento de uma API que suporte as operações de CRUD (criar, ler, atualizar, e apagar) para os pratos do restaurante.
